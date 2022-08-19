@@ -1,9 +1,12 @@
 # tweets-collector
 
-## Setup
+## Set up
 
-### aaas
+### Set up AWS credentials
 
+```sh
+serverless config credentials --provider aws --key [Access key] --secret [Secret access key]
+```
 
 ### Install plugins
 
