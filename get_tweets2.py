@@ -49,6 +49,19 @@ def make_tweepy_client(api_info_file_name: str, api_info_file_dir: str = None):
 ################################################
 
 
+import urllib.parse
+
+
+def parse_query_parameters():
+    qs = '?max_id=1560500970723102720&q=Python%20-filter%3Aretweets&count=100&include_entities=1&result_type=recent'
+    qs = qs.lstrip('?')
+    qs_d = urllib.parse.parse_qs(qs)
+
+    pprint(qs_d)
+    print()
+    print(qs_d['count'])
+
+
 def main():
     api_info_file_name = 'twitter_api_info.yml'
     api = make_tweepy_client(api_info_file_name)
