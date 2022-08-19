@@ -59,7 +59,7 @@ def parse_query_parameters():
 
     pprint(qs_d)
     print()
-    print(qs_d['count'])
+    print(qs_d['count'][0])
 
 
 def main():
