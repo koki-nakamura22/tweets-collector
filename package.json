@@ -1,0 +1,7 @@
+{
+  "devDependencies": {
+    "serverless-local-schedule": "^0.1.7",
+    "serverless-prune-plugin": "^2.0.1",
+    "serverless-s3-local": "^0.6.22"
+  }
+}

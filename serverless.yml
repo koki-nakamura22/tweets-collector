@@ -18,7 +18,7 @@ service: tweets-collector
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
-frameworkVersion: '3'
+frameworkVersion: "3"
 
 provider:
   name: aws
@@ -113,3 +113,7 @@ functions:
 #       Description: "Description for the output"
 #       Value: "Some output value"
 
+plugins:
+  - serverless-prune-plugin
+  - serverless-s3-local
+  - serverless-local-schedule
