@@ -53,7 +53,9 @@ def main():
     api_info_file_name = 'twitter_api_info.yml'
     api = make_tweepy_client(api_info_file_name)
     # query = 'Python filter:retweets'
-    query = 'Python -filter:retweets'
+    # query = 'Python -filter:retweets'
+    # https://time-space.kddi.com/mobile/20210225/3073
+    query = 'Python -filter:retweets min_faves:1000 min_retweets:1000'
     count = 100
 
     tweets = api.search_tweets(q=query, result_type='recent', count=count)
