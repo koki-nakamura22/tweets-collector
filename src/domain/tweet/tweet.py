@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from src.domain.base_domain_model import BaseDomainModel
 
 
-@dataclass(init = False, eq = True, frozen=True)
+@dataclass(init=True, eq=True, frozen=True)
 class Tweet(BaseDomainModel):
     id: int
     body_text: str

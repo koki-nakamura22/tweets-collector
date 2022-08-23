@@ -1,0 +1,2 @@
+db_file_path: db/tweets-collorctor.db
+isolation_level: # "DEFERRED", "IMMEDIATE", or "EXCLUSIVE"

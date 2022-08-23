@@ -1,14 +1,17 @@
 import sqlite3
 from sqlite3 import Connection
 
+from src.utils.myyaml import load_yml
+
+
 class Database:
     __con = None
-    __cur = None
 
     @classmethod
     def transaction(cls) -> Connection:
         if cls.__con is None:
-            cls.__con = sqlite3.connect('') # TODO: Must set a DB file path
+            setting = load_yml('db/tweets-collector.db')
+            cls.__con = sqlite3.connect(setting['db_file_path'])
         return cls.__con
 
     @classmethod

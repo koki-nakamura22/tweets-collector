@@ -3,7 +3,8 @@ from typing import Optional
 
 from src.domain.tweet import Tweet
 
+
 class TweetRepository(ABC):
     @abstractmethod
-    def add(self, tweet: Tweet) -> Optional[Tweet]:
+    def add(self, tweet: Tweet) -> Optional[int]:
         raise NotImplementedError
