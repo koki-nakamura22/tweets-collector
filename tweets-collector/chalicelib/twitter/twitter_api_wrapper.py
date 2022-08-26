@@ -24,6 +24,7 @@ class TweetAPIWrapper:
     def search(cls) -> List:
         api_info_file_name = './twitter_api_info.yml'
         api = cls.__make_tweepy_client(api_info_file_name)
+        # TODO: Move min_faves and min_retweets settings out
         # query = 'Python -filter:retweets min_faves:300 min_retweets:300'
         query = 'Python -filter:retweets min_faves:1000 min_retweets:1000'
         # query = 'Python -filter:retweets min_faves:5000 min_retweets:5000'

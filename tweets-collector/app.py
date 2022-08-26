@@ -1,20 +1,23 @@
 from chalice.app import Chalice
 
 app = Chalice(app_name='tweets-collector')
-app.debug = True
+app.debug = True  # TODO: Delete when development finish
 
 
+# TODO: Delete
 @app.route('/')
 def index():
     return {'hello': 'world'}
 
 
+# TODO: Delete
 @app.route('/tweet/search')
 def tweet_search():
     from chalicelib.twitter.twitter_api_wrapper import TweetAPIWrapper
     return TweetAPIWrapper.search()
 
 
+# TODO: Implement
 @app.route('/a')
 def collect_tweets():
     pass
