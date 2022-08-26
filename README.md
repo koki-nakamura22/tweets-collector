@@ -1,17 +1,7 @@
-# tweets-collector
+# Tweets collector
 
-## Set up
+## Old projects
 
-### Set up AWS credentials
+### _ddd_onion_architecture
 
-```sh
-serverless config credentials --provider aws --key [Access key] --secret [Secret access key]
-```
-
-### Install plugins
-
-```sh
-sls plugin install -n serverless-prune-plugin
-sls plugin install -n serverless-s3-local
-sls plugin install -n serverless-local-schedule
-```
+The ddd and onion architectures were applied to this project, but were deemed suboptimal and were archived.
