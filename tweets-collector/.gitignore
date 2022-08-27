@@ -1,2 +1,7 @@
 .chalice/deployments/
 .chalice/venv/
+
+# minio
+docker/minio/config
+docker/minio/data
+docker/minio/export
