@@ -1,39 +1,48 @@
 import boto3
-from botocore.client import Config
 import os
-from pprint import pprint
-
-endpoint_url = 'http://172.18.0.6:9999'
-bucket_name = 'minio-test'
+from typing import List
 
 
-def list_files():
-    s3 = boto3.client(
+# TODO: Must consider how manage flag for switching local or on AWS
+is_local = True
+
+if is_local:
+    endpoint_url = 'http://172.18.0.6:9999'
+    bucket_name = 'minio-test'
+    aws_access_key_id = 'minioadminuser'
+    aws_secret_access_key = 'minioadminpassword'
+    region_name = 'us-east-1'
+
+    client = boto3.client(
         's3',
         endpoint_url=endpoint_url,
-        aws_access_key_id='minioadminuser',
-        aws_secret_access_key='minioadminpassword',
-        region_name='us-east-1')
-    object_list = s3.list_objects(Bucket=bucket_name).get("Contents")
-    pprint(object_list)
+        aws_access_key_id=aws_access_key_id,
+        aws_secret_access_key=aws_secret_access_key,
+        region_name=region_name)
+    # resource = boto3.resource(
+    #     's3', endpoint_url=endpoint_url,
+    #     aws_access_key_id=aws_access_key_id,
+    #     aws_secret_access_key=aws_secret_access_key,
+    #     region_name=region_name)
+else:
+    client = boto3.client('s3')
+    # resource = boto3.resource('s3')
 
 
-def download_file():
-    s3 = boto3.resource('s3',
-                        endpoint_url=endpoint_url,
-                        aws_access_key_id='YOUR-ACCESSKEYID',
-                        aws_secret_access_key='YOUR-SECRETACCESSKEY',
-                        config=Config(signature_version='s3v4'),
-                        region_name='us-east-1')
+class S3:
+    def __init__(self, bucket_name: str) -> None:
+        self.bucket_name = bucket_name
 
-    res = s3.Bucket(
-        'minio-test').download_file('ddd-191214144001.pdf', './ddd-191214144001.pdf')
-    print(res)
+    def list_files(self) -> List:
+        return client.list_objects(Bucket=self.bucket_name).get("Contents")
 
+    def download_file(self, filename: str, save_dir: str = '/tmp') -> str:
+        save_path = os.path.join(save_dir, filename)
+        client.download_file(
+            self.bucket_name,
+            filename,
+            save_path)
+        return save_path
 
-def main():
-    list_files()
-
-
-if __name__ == "__main__":
-    main()
+    def upload_file(self, local_filepath: str, key: str) -> None:
+        client.upload_file(local_filepath, self.bucket_name, key)
