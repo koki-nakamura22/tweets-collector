@@ -2,10 +2,8 @@
 .chalice/deployments/
 .chalice/venv/
 
-# minio
-docker/minio/config
-docker/minio/data
-docker/minio/export
+## Twitter API config
+twitter_api_info.yml
 
 # DB
 tweets-collorctor.db

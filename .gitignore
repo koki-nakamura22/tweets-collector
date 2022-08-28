@@ -23,5 +23,5 @@ __pycache__/
 # Serverless plugins directories
 node_modules/
 
-## Twitter API config
-twitter_api_info.yml
+# minio
+docker

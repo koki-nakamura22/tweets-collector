@@ -26,7 +26,3 @@ def store_tweets():
             tweet_repo.add(tweet)
         tran.commit()
     s3client.upload_file(saved_filepath, db_filename)
-
-    return {
-        'result': 'ok'
-    }
