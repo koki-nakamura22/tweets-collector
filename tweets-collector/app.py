@@ -1,43 +1,32 @@
 from chalice.app import Chalice
 
+from chalicelib.aws.s3 import S3
+from chalicelib.db.transaction import transaction_scope
+from chalicelib.db.repository import UserRepository, TweetRepository
+from chalicelib.twitter import TweetAPIWrapper
+
+
 app = Chalice(app_name='tweets-collector')
 app.debug = True  # TODO: Delete when development finish
 
 
-# TODO: Delete
-@app.route('/')
-def index():
-    return {'hello': 'world'}
+@app.schedule('cron(0 15 * * ? *)')
+def store_tweets():
+    users, tweets = TweetAPIWrapper.search()
 
+    db_filename = 'tweets-collorctor.db'
+    s3client = S3('minio-test')
+    saved_filepath = s3client.download_file(db_filename)
+    with transaction_scope(saved_filepath) as tran:
+        user_repo = UserRepository(tran)
+        tweet_repo = TweetRepository(tran)
+        for user in users:
+            user_repo.add(user)
+        for tweet in tweets:
+            tweet_repo.add(tweet)
+        tran.commit()
+    s3client.upload_file(saved_filepath, db_filename)
 
-# TODO: Delete
-@app.route('/tweet/search')
-def tweet_search():
-    from chalicelib.twitter.twitter_api_wrapper import TweetAPIWrapper
-    return TweetAPIWrapper.search()
-
-
-# TODO: Implement
-@app.route('/a')
-def collect_tweets():
-    pass
-
-    # The view function above will return {"hello": "world"}
-    # whenever you make an HTTP GET request to '/'.
-    #
-    # Here are a few more examples:
-    #
-    # @app.route('/hello/{name}')
-    # def hello_name(name):
-    #    # '/hello/james' -> {"hello": "james"}
-    #    return {'hello': name}
-    #
-    # @app.route('/users', methods=['POST'])
-    # def create_user():
-    #     # This is the JSON body the user sent in their POST request.
-    #     user_as_json = app.current_request.json_body
-    #     # We'll echo the json body back to the user in a 'user' key.
-    #     return {'user': user_as_json}
-    #
-    # See the README documentation for more examples.
-    #
+    return {
+        'result': 'ok'
+    }

@@ -2,7 +2,7 @@ from typing import Optional
 
 from chalicelib.model.tweet import Tweet
 
-from base_repository import BaseRepository
+from .base_repository import BaseRepository
 
 
 class TweetRepository(BaseRepository):

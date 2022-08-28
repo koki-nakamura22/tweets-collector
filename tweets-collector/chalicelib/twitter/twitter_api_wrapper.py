@@ -1,7 +1,7 @@
 import tweepy
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
-from chalicelib.model.tweet import Tweet
+from chalicelib.model import User, Tweet
 from chalicelib.twitter.twitter_api_info import get_twitter_api_info
 from chalicelib.utils.myurl import parse_query_parameters
 
@@ -21,7 +21,7 @@ class TweetAPIWrapper:
         return api
 
     @classmethod
-    def search(cls) -> List:
+    def search(cls) -> Tuple[List[User], List[Tweet]]:
         api_info_file_name = './twitter_api_info.yml'
         api = cls.__make_tweepy_client(api_info_file_name)
         # TODO: Move min_faves and min_retweets settings out
@@ -30,7 +30,8 @@ class TweetAPIWrapper:
         # query = 'Python -filter:retweets min_faves:5000 min_retweets:5000'
         count = 100
 
-        result = list()
+        result_users = list()
+        result_tweets = list()
         max_id = None
         while True:
             tweets = api.search_tweets(
@@ -40,7 +41,17 @@ class TweetAPIWrapper:
             for tweet in tweets:
                 if tweet.retweeted:
                     continue
-                result.append(Tweet(
+
+                result_users.append(User(
+                    tweet.user.id,
+                    tweet.user.name,
+                    tweet.user.screen_name,
+                    tweet.user.verified,
+                    tweet.user.followers_count,
+                    tweet.user.friends_count
+                ))
+
+                result_tweets.append(Tweet(
                     tweet.id,
                     tweet.text,
                     tweet.lang,
@@ -48,10 +59,14 @@ class TweetAPIWrapper:
                     tweet.retweet_count,
                     str(tweet.created_at),
                     tweet.user.id
-                ).to_dict())
+                ))
 
             if tweets.next_results is None:
                 break
 
             max_id = parse_query_parameters(tweets.next_results)['max_id']
-        return result
+
+        # remove duplicates user data
+        result_users = list(set(result_users))
+
+        return result_users, result_tweets

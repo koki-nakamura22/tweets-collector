@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from base_domain_model import BaseDomainModel
+from .base_domain_model import BaseDomainModel
 
 
 @dataclass(init=True, eq=True, frozen=True)
