@@ -1,50 +1,41 @@
 import sqlite3
 from sqlite3 import Connection
-
-from chalicelib.utils.myyaml import load_yml
+from typing import Optional
 
 
 class Database:
-    __con = None
+    def __init__(self, db_file_path: str) -> None:
+        self.__db_file_path = db_file_path
+        self.__con = None
 
-    @classmethod
-    def transaction(cls) -> Connection:
-        if cls.__con is None:
-            setting = load_yml('db/tweets-collector.db')
-            cls.__con = sqlite3.connect(setting['db_file_path'])
-        return cls.__con
+    def open(self, db_file_path: str) -> None:
+        self.__con = sqlite3.connect(db_file_path)
 
-    @classmethod
-    def create_tables(cls):
-        con = cls.transaction()
-        try:
-            cls.__create_tweets_table(con)
-            cls.__create_users_table(con)
+    def close(self) -> None:
+        if self.__con is not None:
+            self.__con.close()
 
-        except Exception as e:
-            print(e)
-            con.rollback()
+    def transaction(self) -> Connection:
+        if self.__con is not None:
+            self.__con.close()
+        self.__con = sqlite3.connect(self.__db_file_path)
+        return self.__con
 
-        finally:
-            con.close()
+    def create_tables(self, con: Connection) -> None:
+        con.execute('PRAGMA foreign_keys=true;')
+        self.commit()
+        self.__create_users_table(con)
+        self.__create_tweets_table(con)
 
-    @classmethod
-    def __create_tweets_table(cls, con: Connection):
-        sql = '''CREATE TABLE IF NOT EXISTS tweets
-        (
-            id integer not null primary key,
-            body_text text not null,
-            lang text not null,
-            favorite_count integer not null,
-            retweet_count integer not null,
-            created_at text not null,
-            foreign key (user_id) references users(id)
-        )
-        '''
-        con.execute(sql)
+    def commit(self) -> None:
+        if self.__con is not None:
+            self.__con.commit()
 
-    @classmethod
-    def __create_users_table(cls, con: Connection):
+    def rollback(self) -> None:
+        if self.__con is not None:
+            self.__con.rollback()
+
+    def __create_users_table(self, con: Connection):
         sql = '''CREATE TABLE IF NOT EXISTS users
         (
             id integer not null primary key,
@@ -53,6 +44,21 @@ class Database:
             verified text not null,
             followers_count integer not null,
             follow_count integer not null
+        )
+        '''
+        con.execute(sql)
+
+    def __create_tweets_table(self, con: Connection):
+        sql = '''CREATE TABLE IF NOT EXISTS tweets
+        (
+            id integer not null primary key,
+            body_text text not null,
+            lang text not null,
+            favorite_count integer not null,
+            retweet_count integer not null,
+            created_at text not null,
+            user_id int not null,
+            foreign key (user_id) references users(id)
         )
         '''
         con.execute(sql)

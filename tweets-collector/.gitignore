@@ -1,3 +1,4 @@
+# CHALICE
 .chalice/deployments/
 .chalice/venv/
 
@@ -5,3 +6,6 @@
 docker/minio/config
 docker/minio/data
 docker/minio/export
+
+# DB
+tweets-collorctor.db
