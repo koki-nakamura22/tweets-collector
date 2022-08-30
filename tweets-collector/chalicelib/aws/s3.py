@@ -19,14 +19,8 @@ if is_local:
         aws_access_key_id=aws_access_key_id,
         aws_secret_access_key=aws_secret_access_key,
         region_name=region_name)
-    # resource = boto3.resource(
-    #     's3', endpoint_url=endpoint_url,
-    #     aws_access_key_id=aws_access_key_id,
-    #     aws_secret_access_key=aws_secret_access_key,
-    #     region_name=region_name)
 else:
     client = boto3.client('s3')
-    # resource = boto3.resource('s3')
 
 
 class S3:
