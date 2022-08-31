@@ -1,3 +1,4 @@
+import boto3
 from chalice.app import Chalice
 
 from chalicelib.aws.s3 import S3
@@ -10,8 +11,18 @@ app = Chalice(app_name='tweets-collector')
 app.debug = True  # TODO: Delete when development finish
 
 
+def for_automatic_policy_generation():
+    s3 = boto3.client('s3')
+    s3.client.list_objects()
+    s3.download_file()
+    s3.upload_file()
+
+
 @app.schedule('cron(0 15 * * ? *)')
-def store_tweets():
+def store_tweets(event):
+    if False:
+        for_automatic_policy_generation()
+
     # TODO: Move min_faves and min_retweets settings out
     query = 'Python -filter:retweets min_faves:1000 min_retweets:1000'
     users, tweets = TweetAPIWrapper.search(query)
