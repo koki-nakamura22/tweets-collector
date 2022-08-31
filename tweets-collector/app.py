@@ -12,7 +12,9 @@ app.debug = True  # TODO: Delete when development finish
 
 @app.schedule('cron(0 15 * * ? *)')
 def store_tweets():
-    users, tweets = TweetAPIWrapper.search()
+    # TODO: Move min_faves and min_retweets settings out
+    query = 'Python -filter:retweets min_faves:1000 min_retweets:1000'
+    users, tweets = TweetAPIWrapper.search(query)
 
     db_filename = 'tweets-collorctor.db'
     s3client = S3('minio-test')

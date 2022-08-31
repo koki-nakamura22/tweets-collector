@@ -21,18 +21,15 @@ class TweetAPIWrapper:
         return api
 
     @classmethod
-    def search(cls) -> Tuple[List[User], List[Tweet]]:
+    def search(cls,
+               query: str) -> Tuple[List[User],
+                                    List[Tweet]]:
         api_info_file_name = './twitter_api_info.yml'
         api = cls.__make_tweepy_client(api_info_file_name)
-        # TODO: Move min_faves and min_retweets settings out
-        # query = 'Python -filter:retweets min_faves:300 min_retweets:300'
-        query = 'Python -filter:retweets min_faves:1000 min_retweets:1000'
-        # query = 'Python -filter:retweets min_faves:5000 min_retweets:5000'
-        count = 100
-
         result_users = list()
         result_tweets = list()
         max_id = None
+        count = 100
         while True:
             tweets = api.search_tweets(
                 q=query, result_type='recent', count=count, max_id=max_id)
@@ -41,6 +38,8 @@ class TweetAPIWrapper:
             for tweet in tweets:
                 if tweet.retweeted:
                     continue
+                # if tweet.lang != lang:
+                #     continue
 
                 result_users.append(User(
                     tweet.user.id,
