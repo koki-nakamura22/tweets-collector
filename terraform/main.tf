@@ -16,6 +16,10 @@ provider "aws" {
 # --------------------------
 # S3 bucket
 # --------------------------
+variable "lambda_role_arn" {
+  type = string
+}
+
 resource "aws_s3_bucket" "s3_deploy_bucket" {
   bucket = "tweets-collector"
 
@@ -47,7 +51,7 @@ data "aws_iam_policy_document" "s3_deploy_bucket" {
     resources = ["${aws_s3_bucket.s3_deploy_bucket.arn}/*"]
     principals {
       type        = "AWS"
-      identifiers = ["user arn"]
+      identifiers = [var.lambda_role_arn]
     }
   }
 }
