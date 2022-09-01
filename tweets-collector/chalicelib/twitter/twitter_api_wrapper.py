@@ -1,19 +1,19 @@
+from sys import api_version
 import tweepy
-from typing import List, Optional, Tuple
+from typing import List, Tuple
 
+from chalicelib.aws import SSM
 from chalicelib.model import User, Tweet
-from chalicelib.twitter.twitter_api_info import get_twitter_api_info
 from chalicelib.utils.myurl import parse_query_parameters
 
 
 class TweetAPIWrapper:
     @classmethod
-    def __make_tweepy_client(
-            cls,
-            api_info_file_name: str,
-            api_info_file_dir: Optional[str] = None):
-        api_key, api_secret_key, bearer_token, access_token, access_token_secret = get_twitter_api_info(
-            api_info_file_name)
+    def __make_tweepy_client(cls) -> tweepy.API:
+        api_key = SSM.get_parameter('twitter_api_key')
+        api_secret_key = SSM.get_parameter('twitter_api_secret_key')
+        access_token = SSM.get_parameter('twitter_access_token')
+        access_token_secret = SSM.get_parameter('twitter_access_token_secret')
 
         auth = tweepy.OAuthHandler(api_key, api_secret_key)
         auth.set_access_token(access_token, access_token_secret)
@@ -24,8 +24,7 @@ class TweetAPIWrapper:
     def search(cls,
                query: str) -> Tuple[List[User],
                                     List[Tweet]]:
-        api_info_file_name = './twitter_api_info.yml'
-        api = cls.__make_tweepy_client(api_info_file_name)
+        api = cls.__make_tweepy_client()
         result_users = list()
         result_tweets = list()
         max_id = None
@@ -38,8 +37,6 @@ class TweetAPIWrapper:
             for tweet in tweets:
                 if tweet.retweeted:
                     continue
-                # if tweet.lang != lang:
-                #     continue
 
                 result_users.append(User(
                     tweet.user.id,

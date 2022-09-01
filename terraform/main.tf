@@ -14,6 +14,59 @@ provider "aws" {
 }
 
 # --------------------------
+# SSM Parameter Store
+# --------------------------
+variable "twitter_api_key" {
+  type = string
+}
+
+variable "twitter_api_secret_key" {
+  type = string
+}
+
+variable "twitter_bearer_token" {
+  type = string
+}
+
+variable "twitter_access_token" {
+  type = string
+}
+
+variable "twitter_access_token_secret" {
+  type = string
+}
+
+resource "aws_ssm_parameter" "twitter_api_key" {
+  name = "twitter_api_key"
+  type = "String"
+  value = var.twitter_api_key
+}
+
+resource "aws_ssm_parameter" "twitter_api_secret_key" {
+  name = "twitter_api_secret_key"
+  type = "String"
+  value = var.twitter_api_secret_key
+}
+
+resource "aws_ssm_parameter" "twitter_bearer_token" {
+  name = "twitter_bearer_token"
+  type = "String"
+  value = var.twitter_bearer_token
+}
+
+resource "aws_ssm_parameter" "twitter_access_token" {
+  name = "twitter_access_token"
+  type = "String"
+  value = var.twitter_access_token
+}
+
+resource "aws_ssm_parameter" "twitter_access_token_secret" {
+  name = "twitter_access_token_secret"
+  type = "String"
+  value = var.twitter_access_token_secret
+}
+
+# --------------------------
 # S3 bucket
 # --------------------------
 variable "lambda_role_arn" {

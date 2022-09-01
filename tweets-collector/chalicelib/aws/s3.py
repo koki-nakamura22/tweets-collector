@@ -3,10 +3,10 @@ import os
 from typing import List
 
 
-# TODO: Must consider how manage flag for switching local or on AWS
-is_local = True
-
-if is_local:
+is_aws = os.getenv('AWS_REGION', False)
+if is_aws:
+    client = boto3.client('s3')
+else:
     endpoint_url = 'http://172.18.0.6:9999'
     bucket_name = 'minio-test'
     aws_access_key_id = 'minioadminuser'
@@ -19,8 +19,6 @@ if is_local:
         aws_access_key_id=aws_access_key_id,
         aws_secret_access_key=aws_secret_access_key,
         region_name=region_name)
-else:
-    client = boto3.client('s3')
 
 
 class S3:
