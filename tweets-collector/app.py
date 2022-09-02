@@ -29,12 +29,12 @@ def store_tweets(event):
         for_automatic_policy_generation()
 
     # TODO: Move min_faves and min_retweets settings out
-    condition = ' -filter:retweets min_faves:100 min_retweets:100 lang:ja'
+    condition = ' OR @i -@i -filter:retweets min_faves:100 min_retweets:100 lang:ja'
     queries = [
-        f"MR {condition}",
-        f"Mixed Reality {condition}",
-        f"ホロレンズ {condition}",
-        f"HoloLens {condition}",
+        f"MR{condition}",
+        f"Mixed Reality{condition}",
+        f"ホロレンズ{condition}",
+        f"HoloLens{condition}",
     ]
     db_filename = f"{app.app_name}.db"
     s3client = S3(app.app_name)
